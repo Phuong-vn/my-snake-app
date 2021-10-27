@@ -4,24 +4,99 @@ const CELL = 20;
 const COL = WIDTH / CELL;
 const ROW = HEIGHT / CELL;
 const PERIOD = 10;
-const BASE_SNAKE = JSON.stringify([ {x: 3, y: 3}, { x: 2, y: 3}, {x: 1, y: 3}, {x: 0, y: 3} ])
-const bait = {
-  x: 25,
-  y: 10,
-  randomBait() {
-    this.x = Math.round(Math.random() * COL);
-    this.y = Math.round(Math.random() * ROW);
-  }
-};
+const COLOR_HEAD = "#f37a0c";
+const COLOR_BODY = "#2dd2d1";
+const COLOR_FOOD = "#8d1be4";
 
 let canvas = document.querySelector('canvas');
 canvas.width = WIDTH;
 canvas.height = HEIGHT;
 let ctx = canvas.getContext('2d');
 
-let mySnake = JSON.parse(BASE_SNAKE);
 let periodCount = 0;
 let deltaX = 0, deltaY = 0;
+
+class Node {
+  constructor (x, y, color) {
+    this.x = x;
+    this.y = y;
+    this.color = color;
+  }
+
+  draw() {
+    ctx.beginPath();
+    ctx.fillStyle = this.color;
+    ctx.arc((this.x + 0.5) * CELL, (this.y + 0.5) * CELL, CELL / 2, 0, 2 * Math.PI);
+    ctx.fill();
+  }
+
+  update(newX, newY) {
+    this.x = newX;
+    this.y = newY
+  }
+
+  updateRandomly() {
+    this.x = Math.round(Math.random() * (COL - 1));
+    this.y = Math.round(Math.random() * (ROW - 1));
+  }
+}
+
+class Snake {
+  constructor(snakeArray) {
+    this.snakeArray = snakeArray;
+  }
+
+  draw() {
+    for (let node of this.snakeArray) {
+      node.draw();
+    }
+  } 
+
+  update(dx = 0, dy = 0) {
+    if (dx !== 0 || dy !== 0) {
+      for (let i = this.getLength() - 1; i > 0; i--) {
+        this.snakeArray[i].x = this.snakeArray[i - 1].x;
+        this.snakeArray[i].y = this.snakeArray[i - 1].y;
+      }
+      this.getHead().x += dx; this.getHead().y += dy;
+    }
+  }
+  getHead() { return this.snakeArray[0] }
+  getTail() { return this.snakeArray[this.getLength() - 1] }
+  getLength() { return this.snakeArray.length }
+
+  makeLonger() {
+    let newTail = this.getTail();
+    this.snakeArray.push(new Node(newTail.x, newTail.y, COLOR_BODY));
+  }
+
+  isHitWall() {
+    let head = this.getHead();
+    return head.x == COL || head.x < 0 || head.y == ROW || head.y < 0;
+  }
+
+  isHitBody() {
+    let head = this.getHead();
+    let bodies = this.snakeArray.slice(1);
+    for (let body of bodies) {
+      if (head.x == body.x && head.y == body.y) return true;
+    }
+    return false;
+  }
+
+  isEat(food) {
+    let head = this.getHead();
+    return head.x == food.x && head.y == food.y;
+  }
+}
+
+const food = new Node(25, 10, COLOR_FOOD);
+let mySnake = new Snake([ 
+  new Node(3, 3, COLOR_HEAD),
+  new Node(2, 3, COLOR_BODY),
+  new Node(1, 3, COLOR_BODY),
+  new Node(0, 3, COLOR_BODY),
+]);
 
 // bon mua lai sang
 function drawMap () {
@@ -40,58 +115,26 @@ function drawMap () {
   }
 }
 
-function isHitBody([ head, ...bodies ]) {
-  for (let body of bodies) {
-    if (head.x == body.x && head.y == body.y) return true;
-  }
-  return false;
-}
-
-function isHitWall(head) {
-  return head.x == COL || head.x < 0 || head.y == ROW || head.y < 0;
-}
-
-function isBaitEaten(currentBait, head) {
-  return currentBait.x == head.x && currentBait.y == head.y;
-}
-
-function addMoreTailToMySnake(snake) {
-  // This function is going to create a new tail for the snake
-  // t is the temporatory variable in oder to create new tail
-  let newTail;
-  let endBody = snake.slice(-2, -1);
-  let oldTail = snake.slice(-1);
-  if (endBody.x == oldTail.x) {
-    let t = endBody.y - oldTail.y;
-    newTail = {x: oldTail.x, y: oldTail.y - t};
-  } else {
-    let t = endBody.x - oldTail.x;
-    newTail = {x: oldTail.x - t, y: oldTail.y};
-  }
-  mySnake.push(newTail);
-}
-
 window.addEventListener("keydown", function(e) {
-  console.log(e.key)
   let isOpposite;
   switch (e.key) {
     case 'ArrowUp':
-      isOpposite = mySnake[0].x == mySnake[1].x && mySnake[0].y > mySnake[1].y;
+      isOpposite = mySnake.getHead().x == mySnake.snakeArray[1].x && mySnake.getHead().y > mySnake.snakeArray[1].y;
       if (!isOpposite) { deltaX = 0; deltaY = -1 }
       break;
 
     case 'ArrowRight':
-      isOpposite = mySnake[0].x < mySnake[1].x && mySnake[0].y == mySnake[1].y;
+      isOpposite = mySnake.getHead().x < mySnake.snakeArray[1].x && mySnake.getHead().y == mySnake.snakeArray[1].y;
       if (!isOpposite) { deltaX = 1; deltaY = 0 }
       break;
 
     case 'ArrowDown':
-      isOpposite = mySnake[0].x == mySnake[1].x && mySnake[0].y < mySnake[1].y;
+      isOpposite = mySnake.getHead().x == mySnake.snakeArray[1].x && mySnake.getHead().y < mySnake.snakeArray[1].y;
       if (!isOpposite) { deltaX = 0; deltaY = 1 }
       break;
 
     case 'ArrowLeft':
-      isOpposite = mySnake[0].x > mySnake[1].x && mySnake[0].y == mySnake[1].y;
+      isOpposite = mySnake.getHead().x > mySnake.snakeArray[1].x && mySnake.getHead().y == mySnake.snakeArray[1].y;
       if (!isOpposite) { deltaX = -1; deltaY = 0; }      
       break;
   }
@@ -99,7 +142,6 @@ window.addEventListener("keydown", function(e) {
 
 function animate () {
   requestAnimationFrame(animate);
-
   // Set interval
   if (periodCount == PERIOD) {
     // Clear
@@ -107,54 +149,33 @@ function animate () {
     
     // Update frame
     // drawMap();
-    if (deltaX !== 0 || deltaY !== 0) {
-      for (let i = mySnake.length - 1; i > 0; i--) {
-        mySnake[i].x = mySnake[i - 1].x; mySnake[i].y = mySnake[i - 1].y;
-      }
-      mySnake[0].x += deltaX; mySnake[0].y += deltaY;
-    }
-
-    // Coloring and round mySnake
-    for (let i in mySnake) {
-      if (i == 0) {
-        ctx.beginPath();
-        ctx.fillStyle = "#f37a0c"
-        ctx.arc((mySnake[i].x + 0.5) * CELL, (mySnake[i].y + 0.5) * CELL, CELL / 2, 0, 2 * Math.PI);
-        ctx.fill();
-        // ctx.fillRect(mySnake[i].x * CELL, mySnake[i].y * CELL, CELL, CELL);
-      } else {
-        ctx.beginPath();
-        ctx.fillStyle = "#2dd2d1"
-        ctx.arc((mySnake[i].x + 0.5) * CELL, (mySnake[i].y + 0.5) * CELL, CELL / 2, 0, 2 * Math.PI);
-        ctx.fill();
-        // ctx.fillRect(mySnake[i].x * CELL, mySnake[i].y * CELL, CELL, CELL);
-      }
-    }
-
     // Bait appearence
-    ctx.beginPath();
-    ctx.fillStyle = "#8d1be4"
-    ctx.arc((bait.x + 0.5) * CELL, (bait.y + 0.5) * CELL, CELL / 2, 0, 2 * Math.PI);
-    ctx.fill();
-    // ctx.fillRect(bait.x * CELL, bait.y * CELL, CELL, CELL);
-    if (isBaitEaten(bait, mySnake[0])) {
+    if (mySnake.isEat(food)) {
       do {
-        bait.randomBait();
-      } while (mySnake.some(body => bait.x == body.x && bait.y == body.y));
-      addMoreTailToMySnake(mySnake);
+        food.updateRandomly();
+      } while (mySnake.snakeArray.some(body => food.x == body.x && food.y == body.y));
+      mySnake.makeLonger();
     }
-    
+    food.draw();
+
+    // Update and draw my snake
+    mySnake.update(deltaX, deltaY);
+    mySnake.draw();
+
     periodCount = 0;
   }
   periodCount++;
 
   // Game over
-  if (isHitWall(mySnake[0]) || isHitBody(mySnake)) {
+  if (mySnake.isHitWall() || mySnake.isHitBody()) {
     alert("Game over!!!");
     deltaX = 0; deltaY = 0;
-    mySnake = JSON.parse(BASE_SNAKE);
-    bait.x = Math.round(Math.random() * COL);
-    bait.y = Math.round(Math.random() * ROW);
+    mySnake = new Snake([ 
+      new Node(3, 3, COLOR_HEAD),
+      new Node(2, 3, COLOR_BODY),
+      new Node(1, 3, COLOR_BODY),
+      new Node(0, 3, COLOR_BODY),
+    ])
   }
 }
 animate();
