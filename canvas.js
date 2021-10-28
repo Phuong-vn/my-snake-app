@@ -1,4 +1,4 @@
-const WIDTH = 1200;
+const WIDTH = 800;
 const HEIGHT = 380;
 const CELL = 20;
 const COL = WIDTH / CELL;

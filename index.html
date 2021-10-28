@@ -6,14 +6,22 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Classic snake game</title>
   <link rel="icon" href="./snake-pngegg.png">
-  <style>
-    canvas {
-      border: 2px solid rgb(22, 8, 153);
-    }
-  </style>
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <canvas></canvas>
+  <div class="app">
+    <!-- <div class="score-wrapper">
+      <h1 class="title">Your score</h1>
+      <div class="score" id="Score"></div>
+    </div> -->
+    <canvas></canvas>
+    <div class="instruction">
+      <b>INSTRUCTION</b>
+      <br>
+      <p>Use &#8592; &#8593; &#8594; &#8595; to move your snake</p>      
+      <p>Game over when your snake hits wall or itself</p>      
+    </div>
+  </div>
   <script src="canvas.js"></script>
 </body>
 </html>
