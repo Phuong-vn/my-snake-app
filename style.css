@@ -12,6 +12,11 @@ body {
   flex-direction: column;
 }
 
+.title {
+  font-size: 40px;
+  color: #333;
+}
+
 canvas {
   border: 2px solid #ccc;
   background-color: rgb(236, 238, 210);
