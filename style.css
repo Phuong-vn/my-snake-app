@@ -1,7 +1,12 @@
+:root {
+  --rainbow-gradient: linear-gradient(-90deg,#adfbda 0,#35c3ff 30%,#fda399 50%,#76d880 70%,#ebf38b 90%,#adfbda 100%);
+}
+
 body {
   font-family: Arial, Helvetica, sans-serif;
   background-color: rgb(174, 233, 243);
-  color: rgb(49, 40, 40);
+  color: #312b2b;
+  /* background-image: var(--rainbow-gradient); */
 }
 
 .app {
@@ -14,11 +19,10 @@ body {
 
 .title {
   font-size: 40px;
-  color: #333;
 }
 
 .score-wrapper .title {
-  margin: 10px;
+  margin: 20px;
 }
 
 .score {
@@ -31,6 +35,7 @@ body {
 canvas {
   border: 2px solid #ccc;
   background-color: rgb(236, 238, 210);
+  filter: drop-shadow(0 0 2rem rgba(0, 0, 0, 0.3));
 }
 
 .instruction {
