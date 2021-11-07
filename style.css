@@ -25,6 +25,11 @@ body {
   margin: 20px;
 }
 
+.high-score {
+  margin-right: 30px;
+  color: rgb(218, 86, 25);
+}
+
 .score {
   text-align: center;
   font-size: 30px;
