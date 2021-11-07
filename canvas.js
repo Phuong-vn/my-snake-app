@@ -7,6 +7,7 @@ const PERIOD = 10;
 const COLOR_HEAD = "#f37a0c";
 const COLOR_BODY = "#2dd2d1";
 const COLOR_FOOD = "#8d1be4";
+let score = 0;
 
 let canvas = document.querySelector('canvas');
 canvas.width = WIDTH;
@@ -140,6 +141,10 @@ window.addEventListener("keydown", function(e) {
   }
 })
 
+function addScore() {
+  score += 5;
+}
+
 function animate () {
   requestAnimationFrame(animate);
   // Set interval
@@ -155,8 +160,10 @@ function animate () {
         food.updateRandomly();
       } while (mySnake.snakeArray.some(body => food.x == body.x && food.y == body.y));
       mySnake.makeLonger();
+      addScore();
     }
     food.draw();
+    document.getElementById('Score').innerHTML = score;
 
     // Update and draw my snake
     mySnake.update(deltaX, deltaY);
@@ -169,6 +176,7 @@ function animate () {
   // Game over
   if (mySnake.isHitWall() || mySnake.isHitBody()) {
     alert("Game over!!!");
+    score = 0;
     deltaX = 0; deltaY = 0;
     mySnake = new Snake([ 
       new Node(3, 3, COLOR_HEAD),

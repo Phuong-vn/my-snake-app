@@ -17,6 +17,17 @@ body {
   color: #333;
 }
 
+.score-wrapper .title {
+  margin: 10px;
+}
+
+.score {
+  text-align: center;
+  font-size: 30px;
+  font-weight: 600;
+  margin-bottom: 15px;
+}
+
 canvas {
   border: 2px solid #ccc;
   background-color: rgb(236, 238, 210);
