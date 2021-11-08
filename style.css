@@ -21,6 +21,13 @@ body {
   font-size: 40px;
 }
 
+.score-wrapper {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
 .score-wrapper .title {
   margin: 20px;
 }
@@ -30,11 +37,41 @@ body {
   color: rgb(218, 86, 25);
 }
 
+.user-name {
+  display: inline-block;
+}
+
 .score {
-  text-align: center;
   font-size: 30px;
   font-weight: 600;
-  margin-bottom: 15px;
+  margin: 0 15px;
+}
+
+form {
+  display: flex;
+}
+
+form button {
+  height: fit-content;
+  margin-left: 15px;
+  padding: 10px;
+  align-self: center;
+  border-radius: 15px;
+  background: coral;
+  border: none;
+  cursor: pointer;
+  outline: none;
+  color: #fafafa;
+  box-shadow: 0 0 5px 4px #ccc;
+}
+
+form input {
+  padding: 10px 15px;
+  float: right;
+  min-width: 230px;
+  border-radius: 15px;
+  border: none;
+  box-shadow: 0 0 5px 2px #ccc;
 }
 
 canvas {

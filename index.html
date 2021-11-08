@@ -14,12 +14,24 @@
     <div class="score-wrapper">
       <h1 class="title">
         High score: <span class="high-score" id="HighScore"></span>
-        Your score: <span class="score" id="Score"></span>
       </h1>
+      <h2 class="user-name" id="UserName"></h2>
+      <h2 class="score" id="Score"></h2>
+      <form action="" id="snakeNameForm" autocomplete="off">
+        <input 
+        type="text" 
+          id = 'snakeNameInput' 
+          placeholder="Name your snake (8 characters max)"
+          name="snakeName"
+          value=""
+          maxlength="8"
+        >
+        <button type="submit">Save</button>
+      </form>
       
     </div>
     <canvas></canvas>
-    <div class="instruction">
+    <div class="instruction" style="display: none;">
       <b>INSTRUCTION</b>
       <br>
       <p>Use &#8592; &#8593; &#8594; &#8595; to move your snake</p>      

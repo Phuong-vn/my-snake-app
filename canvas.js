@@ -98,6 +98,22 @@ let mySnake = new Snake([
   new Node(0, 3, COLOR_BODY),
 ]);
 
+const USER_NAME = document.getElementById('UserName')
+const SNAKE_NAME_FORM = document.getElementById('snakeNameForm')
+const SNAKE_NAME_INPUT = document.getElementById('snakeNameInput')
+// const USER = {
+//   name: document.getElementById('snakeName').value || "Your score"
+// }
+SNAKE_NAME_FORM.onsubmit = function (e) {
+  // Prevent reloading page
+  e.preventDefault();
+  localStorage.setItem('snakeName', SNAKE_NAME_INPUT.value);
+  SNAKE_NAME_INPUT.value = '';
+  SNAKE_NAME_INPUT.blur();
+}
+
+
+
 const SCORE = {
   currentScore: 0,
   highScore: localStorage.getItem('high score') || 0,
@@ -111,7 +127,6 @@ const SCORE = {
     }
   }
 }
-
 
 // bon mua lai sang
 function drawMap () {
@@ -175,6 +190,7 @@ function animate () {
     food.draw();
     document.getElementById('Score').innerHTML = SCORE.currentScore;
     document.getElementById('HighScore').innerHTML = SCORE.highScore;
+    USER_NAME.innerHTML = localStorage.getItem('snakeName') || 'Your score';
 
     // Update and draw my snake
     mySnake.update(deltaX, deltaY);
